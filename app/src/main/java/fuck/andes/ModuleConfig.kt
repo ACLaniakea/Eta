@@ -12,6 +12,7 @@ internal object ModuleConfig {
     const val SECURE_ASSISTANT = "assistant"
     const val SECURE_VOICE_INTERACTION_SERVICE = "voice_interaction_service"
     const val SYSTEM_UI_PACKAGE = "com.android.systemui"
+    const val LAUNCHER_PACKAGE = "com.android.launcher"
     const val COLOR_DIRECT_PACKAGE = "com.coloros.colordirectservice"
 
     const val CONTEXTUAL_SEARCH_ACTION = "android.app.contextualsearch.action.LAUNCH_CONTEXTUAL_SEARCH"
@@ -24,6 +25,13 @@ internal object ModuleConfig {
         "com.android.server.voiceinteraction.VoiceInteractionManagerService"
     const val OCR_BUSINESS_CLASS =
         "com.oplus.systemui.navigationbar.ocrscreen.OplusOcrScreenBusiness"
+    const val CUI_COMPANION_CLASS =
+        "com.android.quickstep.inputconsumers.OplusCuiInputConsumer\$Companion"
+    const val CUI_GESTURE_LISTENER_CLASS =
+        "com.android.quickstep.inputconsumers.OplusCuiInputConsumer\$mGestureDetector\$1"
+    const val CUI_DEVICE_STATE_CLASS =
+        "com.android.quickstep.RecentsAnimationDeviceState"
+    const val CUI_SERVICE_TYPE = 93
     const val COLOR_DIRECT_COLLECT_ACTIVITY_CLASS =
         "com.coloros.directui.ui.CollectInfoActivity"
     const val COLOR_DIRECT_START_INFO_CLASS =

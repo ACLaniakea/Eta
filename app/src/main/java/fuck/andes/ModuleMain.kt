@@ -11,6 +11,7 @@ class ModuleMain : XposedModule() {
     private val logger = ModuleLogger(this)
     private var systemServerInstalled = false
     private var systemUiInstalled = false
+    private var launcherInstalled = false
     private var googleInstalled = false
     private var colorDirectInstalled = false
     private var currentProcessName: String? = null
@@ -45,6 +46,13 @@ class ModuleMain : XposedModule() {
                 }
             }
 
+            ModuleConfig.LAUNCHER_PACKAGE -> {
+                if (!launcherInstalled && currentProcessName == ModuleConfig.LAUNCHER_PACKAGE) {
+                    launcherInstalled = true
+                    LauncherTaskbarHooks.install(this, logger, param.classLoader)
+                }
+            }
+
             ModuleConfig.GOOGLE_PACKAGE -> {
                 if (!googleInstalled && isCurrentPackageProcess(ModuleConfig.GOOGLE_PACKAGE)) {
                     googleInstalled = true
@@ -71,6 +79,7 @@ class ModuleMain : XposedModule() {
         if (param.isSystemServer) return true
         val processName = param.processName
         return processName == ModuleConfig.SYSTEM_UI_PACKAGE ||
+            processName == ModuleConfig.LAUNCHER_PACKAGE ||
             isPackageProcess(processName, ModuleConfig.GOOGLE_PACKAGE) ||
             isPackageProcess(processName, ModuleConfig.COLOR_DIRECT_PACKAGE)
     }
