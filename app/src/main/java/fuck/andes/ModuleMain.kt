@@ -18,6 +18,7 @@ class ModuleMain : XposedModule() {
 
     override fun onModuleLoaded(param: ModuleLoadedParam) {
         currentProcessName = param.processName
+        logger.info("Eta loaded: process=${param.processName}, systemServer=${param.isSystemServer}")
         if (!shouldKeepLifecycleCallbacks(param)) {
             detach()
             return
@@ -38,6 +39,7 @@ class ModuleMain : XposedModule() {
     }
 
     override fun onPackageReady(param: PackageReadyParam) {
+        logger.info("Eta package ready: package=${param.packageName}, process=$currentProcessName")
         when (param.packageName) {
             ModuleConfig.SYSTEM_UI_PACKAGE -> {
                 if (!systemUiInstalled && currentProcessName == ModuleConfig.SYSTEM_UI_PACKAGE) {

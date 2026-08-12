@@ -17,8 +17,8 @@ android {
         applicationId = "fuck.andes"
         minSdk = 36
         targetSdk = 36
-        versionCode = 152
-        versionName = "1.5.2-tablet"
+        versionCode = 158
+        versionName = "1.5.8-tablet"
     }
 
     buildTypes {
