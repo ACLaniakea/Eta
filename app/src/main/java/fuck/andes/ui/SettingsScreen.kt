@@ -229,7 +229,7 @@ internal fun SettingsScreen(context: Context) {
                         onClick = {
                             val intent = android.content.Intent(
                                 android.content.Intent.ACTION_VIEW,
-                                android.net.Uri.parse("https://github.com/wowohut/fuck-andes"),
+                                android.net.Uri.parse("https://github.com/ACLaniakea/Eta"),
                             )
                             context.startActivity(intent)
                         },

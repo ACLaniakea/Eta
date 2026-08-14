@@ -104,7 +104,8 @@ internal object ContextualSearchHooks {
             ?: return false
         val packages = context.packageManager.getPackagesForUid(Binder.getCallingUid()) ?: return false
         return packages.contains(ModuleConfig.SYSTEM_UI_PACKAGE) ||
-            packages.contains(ModuleConfig.COLOR_DIRECT_PACKAGE)
+            packages.contains(ModuleConfig.COLOR_DIRECT_PACKAGE) ||
+            packages.contains("android")
     }
 
     private fun ensureContextualSearchService(
