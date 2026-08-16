@@ -10,10 +10,15 @@ import io.github.libxposed.api.XposedModule
  * 启动 com.heytap.speechassist 的 GlobalOpenServiceActivity（小布语音助手）。
  * 与 OplusSpeechHandler / OplusOcrScreenBusiness 无关，故在此直接拦截 activity 启动，
  * 改为触发 Google 一圈即搜。
+ *
+ * 注意：只拦截小白条长按的专属入口 GlobalOpenServiceActivity，不拦截整个
+ * com.heytap.speechassist 包，否则用户在设置里正常打开“小布助手”也会被错误重定向。
  */
 internal object SpeechAssistRedirectHooks {
     private const val SPEECH_ASSIST_PACKAGE = "com.heytap.speechassist"
-    private const val ASSISTANT_SCREEN_PACKAGE = "com.coloros.assistantscreen"
+
+    // 小白条长按（导航条手势）专属入口的类名后缀，并非小布助手主界面。
+    private const val GESTURE_BAR_ACTIVITY_SUFFIX = "GlobalOpenServiceActivity"
 
     fun install(module: XposedModule, logger: ModuleLogger, classLoader: ClassLoader) {
         val starterClass = HookSupport.findClassOrNull(
@@ -28,7 +33,10 @@ internal object SpeechAssistRedirectHooks {
         HookSupport.hookMethod(module, logger, executeMethod, "ActivityStarter.execute") { chain ->
             val intent = resolveIntent(chain.getThisObject())
             val pkg = intent?.component?.packageName
-            if (pkg != SPEECH_ASSIST_PACKAGE && pkg != ASSISTANT_SCREEN_PACKAGE) {
+            val cls = intent?.component?.className
+            val isGestureBarEntry = pkg == SPEECH_ASSIST_PACKAGE &&
+                cls != null && cls.endsWith(GESTURE_BAR_ACTIVITY_SUFFIX)
+            if (!isGestureBarEntry) {
                 return@hookMethod chain.proceed()
             }
             if (!Prefs.isEnabled(Prefs.Keys.GESTURE_BAR_CIRCLE_TO_SEARCH)) {
@@ -40,13 +48,13 @@ internal object SpeechAssistRedirectHooks {
             val token = Binder.clearCallingIdentity()
             try {
                 if (CircleToSearchInvoker.trigger(logger, "System")) {
-                    logger.info("已拦截 $pkg 启动，改为 Google 一圈即搜")
+                    logger.info("已拦截小白条长按 $cls，改为 Google 一圈即搜")
                     return@hookMethod null
                 }
             } finally {
                 Binder.restoreCallingIdentity(token)
             }
-            logger.info("Google 一圈即搜触发失败，回退 $pkg")
+            logger.info("Google 一圈即搜触发失败，回退 $cls")
             chain.proceed()
         }
     }
